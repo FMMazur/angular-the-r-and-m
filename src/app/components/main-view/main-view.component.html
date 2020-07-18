@@ -1,0 +1,10 @@
+<div class="container" *ngIf="resources | async">
+  <input type="text" placeholder="Type {{searchType}}" class="form-control" [(ngModel)]="model" [ngbTypeahead]="search" />
+
+  <div class="card-deck">
+    <ng-container *ngFor="let character of result | async">
+      <resource-information [information]="character"></resource-information>
+    </ng-container>
+  </div>
+  <pre>model: {{model | json}}</pre>
+</div>

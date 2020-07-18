@@ -5,10 +5,11 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { MainViewComponent } from './main-view/main-view.component';
+import { MainViewComponent } from './components/main-view/main-view.component';
+import { ResourceInformationComponent } from './components/resource-information/resource-information.component';
 
 @NgModule({
-  declarations: [AppComponent, MainViewComponent],
+  declarations: [AppComponent, MainViewComponent, ResourceInformationComponent],
   imports: [BrowserModule, AppRoutingModule, NgbModule, HttpClientModule],
   providers: [],
   bootstrap: [AppComponent],

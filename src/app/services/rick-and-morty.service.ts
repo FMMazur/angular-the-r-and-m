@@ -2,7 +2,16 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 
 import { Observable } from 'rxjs';
-import { shareReplay, map } from 'rxjs/operators';
+import {
+  shareReplay,
+  map,
+  tap,
+  mergeAll,
+  share,
+  refCount,
+  distinct,
+  distinctUntilChanged,
+} from 'rxjs/operators';
 
 import { TheRickAndMorty } from '../types/rick-and-morty';
 
@@ -11,10 +20,10 @@ import { TheRickAndMorty } from '../types/rick-and-morty';
 })
 export class RickAndMortyService {
   static readonly API_URL = 'https://rickandmortyapi.com/api/';
-  resources: TheRickAndMorty.Resources;
+  resources: Observable<TheRickAndMorty.Resources>;
 
   constructor(private http: HttpClient) {
-    this.getResources().subscribe((resources) => (this.resources = resources));
+    this.resources = this.getResources();
   }
 
   getResources(): Observable<TheRickAndMorty.Resources> {
@@ -23,15 +32,36 @@ export class RickAndMortyService {
       .pipe(shareReplay());
   }
 
-  getCharacters(page?: number): Observable<TheRickAndMorty.Response> {
-    return this.http.get<TheRickAndMorty.Response>(
-      `${this.resources['characters']}/${page || ''}`
+  getCharacters(page?: number): Observable<TheRickAndMorty.ResponseWithInfo> {
+    return this.resources.pipe(
+      map((resources) =>
+        this.http.get<TheRickAndMorty.ResponseWithInfo>(
+          `${resources['characters']}/${page || ''}`
+        )
+      ),
+      mergeAll()
     );
   }
 
-  getCharacter(id: number): Observable<TheRickAndMorty.Response> {
-    return this.http.get<TheRickAndMorty.Response>(
-      `${this.resources['characters']}/${id}`
+  getCharacter(id: number): Observable<TheRickAndMorty.Character> {
+    return this.resources.pipe(
+      map((resources) =>
+        this.http.get<TheRickAndMorty.Character>(
+          `${resources['characters']}/${id}`
+        )
+      ),
+      mergeAll()
+    );
+  }
+
+  searchCharacterByName(name: string) {
+    return this.resources.pipe(
+      map((resources) =>
+        this.http.get<TheRickAndMorty.ResponseWithInfo>(
+          `${resources['characters']}/?name=${name}`
+        )
+      ),
+      mergeAll()
     );
   }
 }

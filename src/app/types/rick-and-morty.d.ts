@@ -5,8 +5,6 @@ export namespace TheRickAndMorty {
     episodes: string;
   }
 
-  export type ResourceType = "characters" | "locations" | "episodes";
-
   export interface Character {
     id: number;
     name: string;
@@ -15,7 +13,7 @@ export namespace TheRickAndMorty {
     type: string;
     gender: string;
     origin: Origin;
-    location: Origin;
+    location: Location;
     image: string;
     episode: string[];
     url: string;
@@ -54,10 +52,14 @@ export namespace TheRickAndMorty {
     prev?: any;
   }
 
-  export type Result = Character | Character[] | Episode | Episode[] | Location | Location[];
+  export type searchType = "character" | "episode" | "location";
 
-  export interface Response {
+  export type Type = Character | Episode | Location;
+  export type TypeArray = Character[] | Episode[] | Location[];
+
+  export type Response = Type;
+  export interface ResponseWithInfo {
     info: ResponseInfo | null;
-    result: Result;
+    results: TypeArray;
   }
 }
