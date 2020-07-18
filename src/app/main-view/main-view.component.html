@@ -1,0 +1,9 @@
+<ng-container *ngIf="resources">
+  <div><a href="{{ resources.characters }}">characters</a></div>
+  <div><a href="{{ resources.locations }}">locations</a></div>
+  <div><a href="{{ resources.episodes }}">episodes</a></div>
+
+  <ng-container *ngFor="let character of result.results | async">
+    <div>{{character.id}}</div>
+  </ng-container>
+</ng-container>

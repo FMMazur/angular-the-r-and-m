@@ -123,6 +123,10 @@
           }
         }
       }
-    }},
-  "defaultProject": "the-r-and-m"
+    }
+  },
+  "defaultProject": "the-r-and-m",
+  "cli": {
+    "analytics": "335d3944-0c35-436c-a393-c0cc2890d225"
+  }
 }
