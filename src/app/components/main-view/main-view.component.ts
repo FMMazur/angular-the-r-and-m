@@ -10,6 +10,7 @@ import {
   catchError,
   mergeAll,
   concatMapTo,
+  retry,
 } from 'rxjs/operators';
 
 import { RickAndMortyService } from '../../services/rick-and-morty.service';
@@ -22,9 +23,11 @@ import { RickAndMortyService } from '../../services/rick-and-morty.service';
 export class MainViewComponent implements OnInit {
   searching: boolean;
   resources: Observable<TheRickAndMorty.Resources>;
-  response: Observable<TheRickAndMorty.ResponseWithInfo> | Observable<TheRickAndMorty.Response>;
+  response:
+    | Observable<TheRickAndMorty.ResponseWithInfo>
+    | Observable<TheRickAndMorty.Response>;
   information: Observable<TheRickAndMorty.Type>;
-  page: number | null;
+  page: number = 1;
 
   search$ = new BehaviorSubject<string>('');
   searchType: TheRickAndMorty.searchType = 'character';
@@ -46,31 +49,40 @@ export class MainViewComponent implements OnInit {
   }
 
   search = () => {
-    this.search$.pipe(
-      concatMapTo(of(this.searchString)),
-      distinctUntilChanged(),
-      tap(() => this.searching = true),
-      switchMap((term) => {
-        if (this.searchType === 'character') {
-          return this.rickAndMortyService.searchCharacterByName(term).pipe(
-            tap(() => {
-              this.searchFailed = false;
-              this.page += 1;
-            }),
-            map((response) => (this.response = of(response))),
-            catchError(() => {
-              this.searchFailed = true;
-              return of([]);
-            })
-          );
-        }
-      }),
-      mergeAll(),
-      tap(() => this.searching = false)
-    ).subscribe();
+    this.search$
+      .pipe(
+        concatMapTo(of(this.searchString)),
+        distinctUntilChanged(),
+        tap(() => (this.searching = true)),
+        switchMap((term) => {
+          if (this.searchType === 'character') {
+            return this.rickAndMortyService
+              .searchCharacterByName(term, this.page)
+              .pipe(
+                tap(() => {
+                  this.searchFailed = false;
+                }),
+                map((response) => (this.response = of(response))),
+                catchError(() => {
+                  this.searchFailed = true;
+                  return of([]);
+                }),
+                retry(2)
+              );
+          }
+        }),
+        mergeAll(),
+        tap(() => (this.searching = false))
+      )
+      .subscribe();
   };
 
   searchCharacter(id: number) {
     this.information = this.rickAndMortyService.getCharacter(id);
+  }
+
+  nextPage() {
+    this.page += 1;
+    this.search();
   }
 }

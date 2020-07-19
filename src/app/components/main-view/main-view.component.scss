@@ -1,0 +1,29 @@
+.portal {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  animation: portal 2s infinite linear;
+
+  z-index: -2;
+}
+
+.title {
+  background: linear-gradient(#fff, #2af598) !important;
+
+  font-size: 28px;
+  font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+  font-weight: bold;
+
+  background-clip: text !important;
+  -webkit-background-clip: text !important;
+  -webkit-text-fill-color: text !important;
+}
+
+@keyframes portal {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}

@@ -56,13 +56,13 @@ export class RickAndMortyService {
     );
   }
 
-  searchCharacterByName(name: string) {
+  searchCharacterByName(name: string, page: number = 1) {
     return this.resources.pipe(
       debounceTime(400),
       distinctUntilChanged(),
       map((resources) =>
         this.http.get<TheRickAndMorty.ResponseWithInfo>(
-          `${resources['characters']}/?name=${name}`
+          `${resources['characters']}/?page=${page}&name=${name}`
         )
       ),
       mergeAll()

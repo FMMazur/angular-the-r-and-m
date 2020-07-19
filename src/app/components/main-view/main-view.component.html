@@ -1,25 +1,71 @@
-<div class="container">
-  <input
-    type="text"
-    class="form-control mx-sm-3"
-    placeholder="Search {{ searchType }}"
-    [(ngModel)]="searchString"
-    (input)="search()"
-  />
-
-  <div class="card-deck" *ngIf="response">
-    <ng-container *ngFor="let result of (response | async).results">
-      <resource-information [information]="result"></resource-information>
-    </ng-container>
-
-    <ngb-pagination
-      [collectionSize]="(response | async).count"
-      [pageSize]="(response | async).pages"
-      [(page)]="page"
-      [boundaryLinks]="true"
-      [directionLinks]="true"
-    >
-    </ngb-pagination>
+<header class="mb-auto">
+  <div class="navbar navbar-dark bg-dark shadow-sm">
+    <div class="container d-flex justify-content-center">
+      <i href="#" class="navbar-brand d-flex align-items-center">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="20"
+          height="20"
+          fill="none"
+          stroke="currentColor"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          aria-hidden="true"
+          class="mr-2"
+          viewBox="0 0 24 24"
+          focusable="false"
+        >
+          <path
+            d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"
+          ></path>
+          <circle cx="12" cy="13" r="4"></circle>
+        </svg>
+        <strong>Rick and Morty</strong>
+      </i>
+    </div>
   </div>
-  <pre>searchString: {{ searchString | json }}</pre>
-</div>
+</header>
+
+<main>
+  <div class="container">
+    <div class="cover-container d-flex w-100 h-100 p-3 mx-auto flex-column">
+      <input
+        type="text"
+        class="form-control mx-sm-3"
+        placeholder="Search {{ searchType }}"
+        [(ngModel)]="searchString"
+        (input)="search()"
+      />
+
+      <img
+        *ngIf="searching"
+        class="portal"
+        src="https://www.rickandmorty.com/assets/images/common/loader.png"
+      />
+
+      <div class="card-deck" *ngIf="response && !searching && !searchFailed">
+        <ng-container *ngFor="let result of (response | async).results">
+          <resource-information [information]="result"></resource-information>
+        </ng-container>
+
+        <button type="button" class="btn btn-sucess" *ngIf="page < (response | async).info.pages"(click)="nextPage()">
+          Next Page
+        </button>
+      </div>
+      <div class="mx-auto bg-dark text-danger text-center" *ngIf="searchFailed">
+        Not found!!!
+      </div>
+      <pre>searchString: {{ searchString | json }}</pre>
+    </div>
+  </div>
+</main>
+
+<footer class="footer mt-auto py-3">
+  <div class="container">
+    <p>
+      Made with <a href="https://getbootstrap.com/">Bootstrap</a>, by
+      <a href="https://github.com/FMMazur">FMMazur</a>.
+    </p>
+  </div>
+</footer>
