@@ -1,19 +1,18 @@
 import { TheRickAndMorty } from '../../types/rick-and-morty.d';
-import { RickAndMortyService } from '../../services/rick-and-morty.service';
 import { Component, OnInit } from '@angular/core';
+import { Observable, of, BehaviorSubject } from 'rxjs';
 import {
   shareReplay,
   map,
   tap,
-  filter,
-  share,
-  refCount,
   distinctUntilChanged,
-  debounceTime,
   switchMap,
   catchError,
+  mergeAll,
+  concatMapTo,
 } from 'rxjs/operators';
-import { Observable, of } from 'rxjs';
+
+import { RickAndMortyService } from '../../services/rick-and-morty.service';
 
 @Component({
   selector: 'main-view',
@@ -21,17 +20,22 @@ import { Observable, of } from 'rxjs';
   styleUrls: ['./main-view.component.scss'],
 })
 export class MainViewComponent implements OnInit {
-  constructor(private rickAndMortyService: RickAndMortyService) {}
+  searching: boolean;
   resources: Observable<TheRickAndMorty.Resources>;
-  result: Observable<TheRickAndMorty.TypeArray>;
+  response: Observable<TheRickAndMorty.ResponseWithInfo> | Observable<TheRickAndMorty.Response>;
   information: Observable<TheRickAndMorty.Type>;
-  searchType: TheRickAndMorty.searchType = "character";
-  searchFailed: boolean = false;
-  model: any;
+  page: number | null;
 
-  async ngOnInit() {
+  search$ = new BehaviorSubject<string>('');
+  searchType: TheRickAndMorty.searchType = 'character';
+  searchFailed = false;
+  searchString: string;
+
+  constructor(private rickAndMortyService: RickAndMortyService) {}
+
+  ngOnInit() {
     this.resources = this.rickAndMortyService.resources;
-    this.result = this.showInfo();
+    // this.result = this.showInfo();
   }
 
   showInfo() {
@@ -41,26 +45,32 @@ export class MainViewComponent implements OnInit {
     );
   }
 
-  search(text: Observable<string>) {
-    text.pipe(
-      debounceTime(200),
+  search = () => {
+    this.search$.pipe(
+      concatMapTo(of(this.searchString)),
       distinctUntilChanged(),
+      tap(() => this.searching = true),
       switchMap((term) => {
         if (this.searchType === 'character') {
-          return this.rickAndMortyService
-            .searchCharacterByName(term)
-            .pipe(tap(() => (this.searchFailed = false)),
+          return this.rickAndMortyService.searchCharacterByName(term).pipe(
+            tap(() => {
+              this.searchFailed = false;
+              this.page += 1;
+            }),
+            map((response) => (this.response = of(response))),
             catchError(() => {
               this.searchFailed = true;
               return of([]);
-            }));
+            })
+          );
         }
-      })
-    );
-  }
+      }),
+      mergeAll(),
+      tap(() => this.searching = false)
+    ).subscribe();
+  };
 
   searchCharacter(id: number) {
-    // if (!this.firstClick) this.firstClick = true;
     this.information = this.rickAndMortyService.getCharacter(id);
   }
 }

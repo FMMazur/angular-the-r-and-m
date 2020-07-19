@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import {
   shareReplay,
   map,
@@ -11,6 +11,7 @@ import {
   refCount,
   distinct,
   distinctUntilChanged,
+  debounceTime,
 } from 'rxjs/operators';
 
 import { TheRickAndMorty } from '../types/rick-and-morty';
@@ -39,7 +40,8 @@ export class RickAndMortyService {
           `${resources['characters']}/${page || ''}`
         )
       ),
-      mergeAll()
+      mergeAll(),
+      tap(c => console.log(c))
     );
   }
 
@@ -56,6 +58,8 @@ export class RickAndMortyService {
 
   searchCharacterByName(name: string) {
     return this.resources.pipe(
+      debounceTime(400),
+      distinctUntilChanged(),
       map((resources) =>
         this.http.get<TheRickAndMorty.ResponseWithInfo>(
           `${resources['characters']}/?name=${name}`
