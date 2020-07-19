@@ -1,28 +1,9 @@
 <header class="mb-auto">
   <div class="navbar navbar-dark bg-dark shadow-sm">
     <div class="container d-flex justify-content-center">
-      <i href="#" class="navbar-brand d-flex align-items-center">
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="20"
-          height="20"
-          fill="none"
-          stroke="currentColor"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          stroke-width="2"
-          aria-hidden="true"
-          class="mr-2"
-          viewBox="0 0 24 24"
-          focusable="false"
-        >
-          <path
-            d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"
-          ></path>
-          <circle cx="12" cy="13" r="4"></circle>
-        </svg>
+      <h1 class="navbar-brand d-flex align-items-center">
         <strong>Rick and Morty</strong>
-      </i>
+      </h1>
     </div>
   </div>
 </header>
@@ -44,19 +25,18 @@
         src="https://www.rickandmorty.com/assets/images/common/loader.png"
       />
 
-      <div class="card-deck" *ngIf="response && !searching && !searchFailed">
-        <ng-container *ngFor="let result of (response | async).results">
-          <resource-information [information]="result"></resource-information>
+      <div class="card-deck" *ngIf="(response | async) && !searching && !searchFailed">
+        <ng-container *ngIf="(response | async) !== null">
+          <resource-information *ngFor="let result of (response | async).results" [information]="result"></resource-information>
         </ng-container>
 
-        <button type="button" class="btn btn-sucess" *ngIf="page < (response | async).info.pages"(click)="nextPage()">
+        <button type="button" class="btn btn-sucess" *ngIf="(response | async).info && (response | async).info.next" (click)="nextPage()">
           Next Page
         </button>
       </div>
       <div class="mx-auto bg-dark text-danger text-center" *ngIf="searchFailed">
         Not found!!!
       </div>
-      <pre>searchString: {{ searchString | json }}</pre>
     </div>
   </div>
 </main>

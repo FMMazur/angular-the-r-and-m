@@ -1,6 +1,5 @@
-import { TheRickAndMorty } from '../../types/rick-and-morty.d';
 import { Component, OnInit } from '@angular/core';
-import { Observable, of, BehaviorSubject } from 'rxjs';
+import { Observable, of, BehaviorSubject, scheduled } from 'rxjs';
 import {
   shareReplay,
   map,
@@ -14,6 +13,7 @@ import {
 } from 'rxjs/operators';
 
 import { RickAndMortyService } from '../../services/rick-and-morty.service';
+import { TheRickAndMorty } from '../../types/rick-and-morty.d';
 
 @Component({
   selector: 'main-view',
@@ -38,14 +38,11 @@ export class MainViewComponent implements OnInit {
 
   ngOnInit() {
     this.resources = this.rickAndMortyService.resources;
-    // this.result = this.showInfo();
+    this.response = this.showInfo();
   }
 
   showInfo() {
-    return this.rickAndMortyService.getCharacters().pipe(
-      map((response) => response.results),
-      shareReplay()
-    );
+    return this.rickAndMortyService.getCharacters();
   }
 
   search = () => {
@@ -63,8 +60,8 @@ export class MainViewComponent implements OnInit {
                   this.searchFailed = false;
                 }),
                 map((response) => (this.response = of(response))),
-                catchError(() => {
-                  this.searchFailed = true;
+                catchError((err) => {
+                  if (err) this.searchFailed = true;
                   return of([]);
                 }),
                 retry(2)
@@ -82,7 +79,27 @@ export class MainViewComponent implements OnInit {
   }
 
   nextPage() {
-    this.page += 1;
-    this.search();
+    ++this.page;
+    this.search$
+      .pipe(
+        concatMapTo(this.response),
+        tap(() => (this.searching = true)),
+        switchMap((response: TheRickAndMorty.ResponseWithInfo) => {
+          return this.rickAndMortyService.search(response.info.next).pipe(
+            tap(() => {
+              this.searchFailed = false;
+            }),
+            map((response) => (this.response = of(response))),
+            catchError((err) => {
+              if (err) this.searchFailed = true;
+              return of([]);
+            }),
+            retry(2)
+          );
+        }),
+        mergeAll(),
+        tap(() => (this.searching = false))
+      )
+      .subscribe();
   }
 }
