@@ -5,30 +5,20 @@ export namespace TheRickAndMorty {
     episodes: string;
   }
 
-  export type CharacterStatus = 'alive' | 'dead' | 'unknown';
-  export type CharacterGender = 'female' | 'male' | 'genderless' | 'unknown';
+  export type CharacterStatus = 'Alive' | 'Dead' | 'unknown';
+  export type CharacterGender = 'Female' | 'Male' | 'Genderless' | 'unknown';
 
   export interface Character {
     id: number;
     name: string;
-    status: string;
-    species: CharacterStatus;
+    status: CharacterStatus;
+    species: string;
     type: string;
     gender: CharacterGender;
     origin: Origin;
-    location: Location;
+    location: { name: string; url: string };
     image: string;
     episode: string[];
-    url: string;
-    created: string;
-  }
-
-  export interface Location {
-    id: number;
-    name: string;
-    type: string;
-    dimension: string;
-    residents: [];
     url: string;
     created: string;
   }
@@ -39,6 +29,16 @@ export namespace TheRickAndMorty {
     air_date: string;
     episode: string;
     characters: string[];
+    url: string;
+    created: string;
+  }
+
+  export interface Location {
+    id: number;
+    name: string;
+    type: string;
+    dimension: string;
+    residents: [];
     url: string;
     created: string;
   }
@@ -55,7 +55,7 @@ export namespace TheRickAndMorty {
     prev?: any;
   }
 
-  export type searchType = "character" | "episode" | "location";
+  export type TypeString = 'character' | 'episode' | 'location';
 
   export type Type = Character | Episode | Location;
   export type TypeArray = Character[] | Episode[] | Location[];
