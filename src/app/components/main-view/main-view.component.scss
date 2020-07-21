@@ -7,6 +7,14 @@
   // z-index: -2;
 }
 
+.green-pigment {
+  background-color: #3FA156 !important;
+}
+
+.text-spring-green {
+  color: #49F270 !important;
+}
+
 .title {
   background: linear-gradient(#fff, #2af598) !important;
 
@@ -17,6 +25,21 @@
   background-clip: text !important;
   -webkit-background-clip: text !important;
   -webkit-text-fill-color: text !important;
+}
+
+.form-control.mt-4 {
+  height: auto;
+}
+
+.searchby {
+  margin-left: 0.25rem !important;
+}
+
+@media (max-width: 1000px) {
+  .searchby {
+    margin-left: 0.25rem !important;
+    margin-right: 0.75rem !important;
+  }
 }
 
 @keyframes portal {

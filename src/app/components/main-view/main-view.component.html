@@ -1,49 +1,127 @@
 <header class="mb-auto">
-  <div class="navbar navbar-dark bg-dark shadow-sm">
-    <div class="container d-flex justify-content-center">
+  <div class="navbar navbar-dark green-pigment shadow-sm">
+    <a href="#" class="container d-flex justify-content-center">
+      <img
+        src="./assets/noun_Rick Sanchez_2569366.svg"
+        alt="Rick Sanchez by lucas from the Noun Project"
+        width="150px"
+        height="150px"
+        style="padding-top: 10px;"
+      />
       <h1 class="navbar-brand d-flex align-items-center">
         <strong>Rick and Morty</strong>
       </h1>
-    </div>
+    </a>
   </div>
 </header>
 
-<main>
+<main class="flex-shrink-0">
   <div class="container">
-    <div class="cover-container d-flex w-100 h-100 p-3 mx-auto flex-column">
-      <input
-        type="text"
-        class="form-control mx-sm-3"
-        placeholder="Search {{ searchType }}"
-        [(ngModel)]="searchString"
-        (input)="search()"
-      />
-
-      <img
-        *ngIf="searching"
-        class="portal"
-        src="https://www.rickandmorty.com/assets/images/common/loader.png"
-      />
-
-      <div class="card-deck" *ngIf="(response | async) && !searching && !searchFailed">
-        <ng-container *ngIf="(response | async) !== null">
-          <resource-information *ngFor="let result of (response | async).results" [information]="result"></resource-information>
-        </ng-container>
-
-        <button type="button" class="btn btn-sucess" *ngIf="(response | async).info && (response | async).info.next" (click)="nextPage()">
-          Next Page
-        </button>
+    <div class="border border-success d-flex-inline rounded mt-3 mb-4">
+      <div class="input-group mx-auto mb-2 col-6">
+        <input
+          type="search"
+          placeholder="Search {{ searchType }}"
+          [(ngModel)]="searchString"
+          (input)="search()"
+          aria-describedby="button-addon7"
+          class="form-control mt-4"
+        />
       </div>
-      <div class="mx-auto bg-dark text-danger text-center" *ngIf="searchFailed">
-        Not found!!!
+      <div class="input-group mx-auto col-6 d-flex mb-2 text-spring-green">
+        <strong class="mx-auto searchby">Search by:</strong>
+        <div class="form-check form-check-inline ml-2 align-text-top">
+          <input
+            class="form-check-input"
+            name="charactersRadio"
+            type="radio"
+            value="character"
+            [(ngModel)]="searchType"
+            (change)="search()"
+            checked
+          />
+          <label class="form-check-label" for="charactersRadio">
+            Character
+          </label>
+        </div>
+        <div class="form-check form-check-inline ml-2 align-text-top">
+          <input
+            class="form-check-input"
+            name="episodeRadio"
+            type="radio"
+            value="episode"
+            [(ngModel)]="searchType"
+            (change)="search()"
+          />
+          <label class="form-check-label" for="episodeRadio">
+            Episode
+          </label>
+        </div>
+        <div class="form-check form-check-inline ml-2 align-text-top">
+          <input
+            class="form-check-input"
+            name="locationRadio"
+            type="radio"
+            value="location"
+            [(ngModel)]="searchType"
+            (change)="search()"
+          />
+          <label class="form-check-label" for="locationRadio">
+            Location
+          </label>
+        </div>
       </div>
+    </div>
+
+    <img
+      *ngIf="searching && !searchFailed"
+      class="portal"
+      src="https://www.rickandmorty.com/assets/images/common/loader.png"
+    />
+
+    <div *ngIf="(response | async) && !searching && !searchFailed">
+      <accordion>
+        <accordion-item
+          *ngFor="let result of (response | async).results"
+          [information]="result"
+        ></accordion-item>
+      </accordion>
+    </div>
+
+    <ng-container *ngIf="response | async">
+      <button
+        type="button"
+        class="btn btn-sucess text-spring-green"
+        *ngIf="(response | async).info && (response | async).info.prev"
+        (click)="prevPage()"
+      >
+        <ion-icon name="arrow-back-circle" class="align-middle"></ion-icon>
+        Previous Page
+      </button>
+      <button
+        type="button"
+        class="btn btn-sucess text-spring-green"
+        *ngIf="(response | async).info && (response | async).info.next"
+        (click)="nextPage()"
+      >
+        Next Page
+        <ion-icon name="arrow-forward-circle" class="align-middle"></ion-icon>
+      </button>
+    </ng-container>
+
+    <div
+      *ngIf="searchFailed"
+      class="alert alert-danger mx-auto text-center"
+      role="alert"
+    >
+      Not found!!!
     </div>
   </div>
 </main>
 
 <footer class="footer mt-auto py-3">
   <div class="container">
-    <p>
+    <p class="text-white">
       Made with <a href="https://getbootstrap.com/">Bootstrap</a>, by
       <a href="https://github.com/FMMazur">FMMazur</a>.
     </p>
