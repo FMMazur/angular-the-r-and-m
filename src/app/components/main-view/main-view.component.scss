@@ -35,10 +35,22 @@
   margin-left: 0.25rem !important;
 }
 
+input[type=radio] {
+  width: 16px;
+  height: 16px;
+}
+
 @media (max-width: 1000px) {
   .searchby {
     margin-left: 0.25rem !important;
     margin-right: 0.75rem !important;
+  }
+}
+
+@media(max-width: 500px){
+  input[type=search]{
+    margin-right: -25px;
+    margin-left: -15px;
   }
 }
 
