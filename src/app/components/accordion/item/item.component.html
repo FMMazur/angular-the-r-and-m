@@ -1,0 +1,141 @@
+<div class="acc-header" (click)="toggle()">
+  <div class="header-title">
+    <strong class="mr-1">{{ information.name }}</strong>
+    <ng-container *ngIf="checkType() === 'character'">
+      <span
+        class="badge"
+        [ngClass]="{
+          'badge-success': information.status == 'Alive',
+          'badge-danger': information.status == 'Dead',
+          'badge-secondary': information.status == 'unknown'
+        }"
+      >
+        <ion-icon *ngIf="information.status == 'Alive'" name="heart"></ion-icon>
+        <ion-icon *ngIf="information.status == 'Dead'" name="skull"></ion-icon>
+        <ng-container *ngIf="information.status == 'unknown'">???</ng-container>
+      </span>
+    </ng-container>
+  </div>
+  <div
+    class="arrow align-middle"
+    [@rotatedState]="!show ? 'default' : 'rotated'"
+  >
+    <ion-icon name="play-outline"></ion-icon>
+  </div>
+</div>
+<div [@smoothCollapse]="!show ? 'initial' : 'final'">
+  <div class="acc-body card">
+    <ng-container *ngIf="checkType() === 'character'">
+      <div class="row no-gutters">
+        <div class="col-md-4">
+          <img src="{{ information.image }}" class="card-img" />
+        </div>
+        <div class="col-md-8">
+          <div class="card-body">
+            <div class="card-text">
+              <div class="badge badge-info">
+                Species: {{ information.species }}
+              </div>
+            </div>
+            <div class="card-text">
+              <div class="badge badge-info">
+                Gender:
+                <ng-container *ngIf="information.gender === 'Male'"
+                  ><ion-icon class="align-bottom" name="male"></ion-icon
+                ></ng-container>
+                <ng-container *ngIf="information.gender === 'Female'"
+                  ><ion-icon class="align-bottom" name="female"></ion-icon
+                ></ng-container>
+                <ng-container *ngIf="information.gender === 'Genderless'"
+                  ><img
+                    src="./assets/noun_genderless_1629803.svg"
+                    alt="genderless by Guilherme Furtado from the Noun Project"
+                    width="15px"
+                    height="15px"
+                /></ng-container>
+
+                <ng-container *ngIf="information.gender === 'unknown'"
+                  >???</ng-container
+                >
+              </div>
+            </div>
+            <div class="card-text">
+              <div class="badge badge-info">
+                Location:
+                <small>
+                  <img
+                    src="./assets/noun_4D_33346.svg"
+                    alt="4D by Michael Senkow from the Noun Project"
+                    width="15px"
+                    height="15px"
+                  />
+                  {{ information.location.name }}
+                </small>
+              </div>
+            </div>
+
+            <p class="card-text text-white">
+              <small
+                >
+                Origin:
+                <ion-icon
+                  class="align-middle"
+                  name="planet-outline"
+                ></ion-icon>
+                {{ information.origin.name }}
+              </small>
+            </p>
+          </div>
+        </div>
+      </div>
+    </ng-container>
+    <ng-container *ngIf="checkType() === 'episode'">
+      <div class="col-md-8">
+        <div class="card-body">
+          <div class="card-text">
+            <div class="badge badge-info">
+              Air Date
+              <img
+                src="./assets/noun_Calendar_3376275.svg"
+                alt="Calendar by franc11s from the Noun Project"
+                width="25px"
+                height="25px"
+              />:
+              {{ information.air_date }}
+            </div>
+          </div>
+          <div class="card-text">
+            <div class="badge badge-info">
+              Episode:
+              {{ information.episode }}
+            </div>
+          </div>
+        </div>
+      </div>
+    </ng-container>
+    <ng-container *ngIf="checkType() === 'location'">
+      <div class="col-md-8">
+        <div class="card-body">
+          <div class="card-text">
+            <div class="badge badge-info">Type: {{ information.type }}</div>
+          </div>
+          <div class="card-text">
+            <div class="badge badge-info">
+              Dimension
+              <ng-container>
+                <img
+                  src="./assets/noun_4D_33346.svg"
+                  alt="4D by Michael Senkow from the Noun Project"
+                  width="15px"
+                  height="15px"
+                /> </ng-container
+              >:
+              {{ information.dimension }}
+            </div>
+          </div>
+        </div>
+      </div>
+    </ng-container>
+    <ng-container *ngIf="!checkType()"></ng-container>
+  </div>
+</div>
