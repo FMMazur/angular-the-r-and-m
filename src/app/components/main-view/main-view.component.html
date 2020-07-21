@@ -88,6 +88,14 @@
       </accordion>
     </div>
 
+    <div
+      *ngIf="searchFailed"
+      class="alert alert-danger mx-auto text-center"
+      role="alert"
+    >
+      Not found!!!
+    </div>
+
     <ng-container *ngIf="response | async">
       <button
         type="button"
@@ -108,14 +116,6 @@
         <ion-icon name="arrow-forward-circle" class="align-middle"></ion-icon>
       </button>
     </ng-container>
-
-    <div
-      *ngIf="searchFailed"
-      class="alert alert-danger mx-auto text-center"
-      role="alert"
-    >
-      Not found!!!
-    </div>
   </div>
 </main>
 
