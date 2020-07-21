@@ -33,5 +33,6 @@ import { AccordionItemComponent } from './components/accordion/item/item.compone
 })
 export class AppModule {
   constructor(){
+    document.cookie = "SameSite=None;Secure"
   }
 }
