@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams, HttpHeaders } from '@angular/common/http';
 
-import { Observable, of } from 'rxjs';
+import { Observable } from 'rxjs';
 import {
   shareReplay,
   map,
@@ -10,6 +10,7 @@ import {
 } from 'rxjs/operators';
 
 import { TheRickAndMorty } from '../types/rick-and-morty';
+import { isOf } from '../../utils/typeguard';
 
 @Injectable({
   providedIn: 'root',
@@ -19,7 +20,7 @@ export class RickAndMortyService {
   resources: Observable<TheRickAndMorty.Resources>;
   headers = new HttpHeaders()
     .append('Content-Type', 'application/json')
-    .append('SameSite', 'None');
+    .append('Set-Cookie', 'SameSite=None;Secure');
 
   constructor(private http: HttpClient) {
     this.resources = this.getResources();
@@ -70,7 +71,7 @@ export class RickAndMortyService {
     );
   }
 
-  getEpisodes(page?: number): Observable<TheRickAndMorty.ResponseWithInfo> {
+  getEpisodes(page: number = 1): Observable<TheRickAndMorty.ResponseWithInfo> {
     const options = page
       ? {
           headers: this.headers,
@@ -110,7 +111,7 @@ export class RickAndMortyService {
     );
   }
 
-  getLocations(page?: number): Observable<TheRickAndMorty.ResponseWithInfo> {
+  getLocations(page: number = 1): Observable<TheRickAndMorty.ResponseWithInfo> {
     const options = page
       ? {
           headers: this.headers,
@@ -183,6 +184,7 @@ export class RickAndMortyService {
   }
 
   searchEpisode(name: string, page: number | string = 1, episode?: string) {
+    console.log(name)
     const params = new HttpParams()
       .append('page', page.toString())
       .append('name', name.toString());
@@ -236,12 +238,25 @@ export class RickAndMortyService {
     );
   }
 
-  searchCharacterByName(name: string, page: number | string = 1) {
+  searchCharacterByName(
+    name: string,
+    page: number | string = 1
+  ): Observable<TheRickAndMorty.ResponseWithInfo> {
     return this.searchCharacter(name, page);
   }
 
-  searchEpisodeByName(name: string, page: number | string = 1) {
+  searchEpisodeByName(
+    name: string,
+    page: number | string = 1
+  ): Observable<TheRickAndMorty.ResponseWithInfo> {
     return this.searchEpisode(name, page);
+  }
+
+  searchLocationByName(
+    name: string,
+    page: number
+  ): Observable<TheRickAndMorty.ResponseWithInfo> {
+    return this.searchLocation(name, page);
   }
 
   search(url: string) {
@@ -249,6 +264,8 @@ export class RickAndMortyService {
       headers: this.headers,
     };
 
-    return this.http.get<TheRickAndMorty.ResponseWithInfo>(url, options).pipe(shareReplay());
+    return this.http
+      .get<TheRickAndMorty.ResponseWithInfo>(url, options)
+      .pipe(shareReplay());
   }
 }
