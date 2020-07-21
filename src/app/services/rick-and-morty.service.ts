@@ -20,7 +20,8 @@ export class RickAndMortyService {
   resources: Observable<TheRickAndMorty.Resources>;
   headers = new HttpHeaders()
     .append('Content-Type', 'application/json')
-    .append('Set-Cookie', 'SameSite=None;Secure');
+    .append('Set-Cookie', 'SameSite=None;Secure')
+    .append('Cache-Control', 'max-age=31536000');
 
   constructor(private http: HttpClient) {
     this.resources = this.getResources();
