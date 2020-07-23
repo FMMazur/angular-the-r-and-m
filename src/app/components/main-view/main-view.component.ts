@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { Observable, of, BehaviorSubject } from 'rxjs';
+import { Observable, of, BehaviorSubject, Subscription } from 'rxjs';
 import {
-  shareReplay,
   map,
   tap,
   distinctUntilChanged,
@@ -10,6 +9,7 @@ import {
   mergeAll,
   concatMapTo,
   retry,
+  debounceTime,
 } from 'rxjs/operators';
 
 import { RickAndMortyService } from '../../services/rick-and-morty.service';
@@ -28,6 +28,7 @@ export class MainViewComponent implements OnInit {
   page: number = 1;
 
   search$ = new BehaviorSubject<string>('');
+  searchSubscription: Subscription;
   searchType: TheRickAndMorty.TypeString = 'character';
   searching: boolean;
   searchFailed = false;
@@ -45,10 +46,13 @@ export class MainViewComponent implements OnInit {
   }
 
   search = () => {
-    this.search$
+    if (this.searchSubscription) this.searchSubscription.unsubscribe();
+
+    this.searchSubscription = this.search$
       .pipe(
         concatMapTo(of(this.searchString)),
         distinctUntilChanged(),
+        debounceTime(200),
         tap(() => {
           this.searching = true;
           this.page = 1;
@@ -89,10 +93,6 @@ export class MainViewComponent implements OnInit {
       )
       .subscribe();
   };
-
-  onChangeSearchType() {
-    console.log(this.searchType);
-  }
 
   pageSearch(type: 'prev' | 'next') {
     this.search$
