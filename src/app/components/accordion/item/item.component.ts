@@ -45,8 +45,7 @@ import { isOf } from '../../../../utils/typeguard';
           transform: 'rotate(90deg)',
         })
       ),
-      ,
-      transition('default <=> rotated', animate('250ms')),
+      transition('default<=>rotated', animate('250ms')),
     ]),
   ],
 })

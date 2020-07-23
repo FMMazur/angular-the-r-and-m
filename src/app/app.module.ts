@@ -1,7 +1,7 @@
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
-import { BrowserAnimationsModule, NoopAnimationsModule } from '@angular/platform-browser/animations';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HttpClientModule } from '@angular/common/http';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
@@ -25,7 +25,6 @@ import { AccordionItemComponent } from './components/accordion/item/item.compone
     NgbModule,
     HttpClientModule,
     FormsModule,
-    NoopAnimationsModule,
   ],
   providers: [],
   bootstrap: [AppComponent],
