@@ -10,7 +10,6 @@ import {
 } from 'rxjs/operators';
 
 import { TheRickAndMorty } from '../types/rick-and-morty';
-import { isOf } from '../../utils/typeguard';
 
 @Injectable({
   providedIn: 'root',
@@ -33,17 +32,21 @@ export class RickAndMortyService {
       .pipe(shareReplay());
   }
 
-  getCharacters(
-    page: number = 1
+  getAll(
+    type: 'characters' | 'episodes' | 'locations',
+    options: {
+      headers?: HttpHeaders | { [header: string]: string | string[] };
+      observe?: 'body';
+      params?: HttpParams | { [param: string]: string | string[] };
+      reportProgress?: boolean;
+      responseType?: 'json';
+      withCredentials?: boolean;
+    }
   ): Observable<TheRickAndMorty.ResponseWithInfo> {
-    const options = {
-      headers: this.headers,
-      params: new HttpParams().append('page', page.toString()),
-    };
     return this.resources.pipe(
       map((resources) =>
         this.http.get<TheRickAndMorty.ResponseWithInfo>(
-          `${resources['characters']}/`,
+          `${resources[type]}/`,
           options
         )
       ),
@@ -52,24 +55,55 @@ export class RickAndMortyService {
     );
   }
 
-  getCharacter(
-    id?: number | string,
-    url?: string
-  ): Observable<TheRickAndMorty.Character> {
-    const options = {
-      headers: this.headers,
-    };
-
+  getOne(
+    type: 'character' | 'episode' | 'location',
+    id: number | string,
+    url: string,
+    options: {
+      headers?: HttpHeaders | { [header: string]: string | string[] };
+      observe?: 'body';
+      params?: HttpParams | { [param: string]: string | string[] };
+      reportProgress?: boolean;
+      responseType?: 'json';
+      withCredentials?: boolean;
+    }
+  ): Observable<
+    | TheRickAndMorty.Character
+    | TheRickAndMorty.Episode
+    | TheRickAndMorty.Location
+  > {
     return this.resources.pipe(
-      map((resources) =>
-        this.http.get<TheRickAndMorty.Character>(
-          url || `${resources['characters']}/${id}`,
-          options
-        )
-      ),
+      map((resources) => {
+        if (type === 'character')
+          return this.http.get<TheRickAndMorty.Character>(
+            url || `${resources[type]}/${id}`,
+            options
+          );
+        else if (type === 'episode')
+          return this.http.get<TheRickAndMorty.Episode>(
+            url || `${resources[type]}/${id}`,
+            options
+          );
+        else if (type === 'location')
+          return this.http.get<TheRickAndMorty.Location>(
+            url || `${resources[type]}/${id}`,
+            options
+          );
+      }),
       mergeAll(),
       shareReplay()
     );
+  }
+
+  getCharacters(
+    page: number = 1
+  ): Observable<TheRickAndMorty.ResponseWithInfo> {
+    const options = {
+      headers: this.headers,
+      params: new HttpParams().append('page', page.toString()),
+    };
+
+    return this.getAll('characters', options);
   }
 
   getEpisodes(page: number = 1): Observable<TheRickAndMorty.ResponseWithInfo> {
@@ -80,36 +114,7 @@ export class RickAndMortyService {
         }
       : {};
 
-    return this.resources.pipe(
-      map((resources) =>
-        this.http.get<TheRickAndMorty.ResponseWithInfo>(
-          `${resources['episodes']}/`,
-          options
-        )
-      ),
-      mergeAll(),
-      shareReplay()
-    );
-  }
-
-  getEpisode(
-    id?: number | string,
-    url?: string
-  ): Observable<TheRickAndMorty.Episode> {
-    const options = {
-      headers: this.headers,
-    };
-
-    return this.resources.pipe(
-      map((resources) =>
-        this.http.get<TheRickAndMorty.Episode>(
-          url || `${resources['episodes']}/${id}`,
-          options
-        )
-      ),
-      mergeAll(),
-      shareReplay()
-    );
+    return this.getAll('episodes', options);
   }
 
   getLocations(page: number = 1): Observable<TheRickAndMorty.ResponseWithInfo> {
@@ -120,16 +125,33 @@ export class RickAndMortyService {
         }
       : {};
 
-    return this.resources.pipe(
-      map((resources) =>
-        this.http.get<TheRickAndMorty.ResponseWithInfo>(
-          `${resources['locations']}/`,
-          options
-        )
-      ),
-      mergeAll(),
-      shareReplay()
-    );
+    return this.getAll('locations', options);
+  }
+
+  getCharacter(
+    id?: number | string,
+    url?: string
+  ): Observable<TheRickAndMorty.Character> {
+    const options = {
+      headers: this.headers,
+    };
+
+    return this.getOne('character', id, url, options) as Observable<
+      TheRickAndMorty.Character
+    >;
+  }
+
+  getEpisode(
+    id?: number | string,
+    url?: string
+  ): Observable<TheRickAndMorty.Episode> {
+    const options = {
+      headers: this.headers,
+    };
+
+    return this.getOne('episode', id, url, options) as Observable<
+      TheRickAndMorty.Episode
+    >;
   }
 
   getLocation(
@@ -140,16 +162,9 @@ export class RickAndMortyService {
       headers: this.headers,
     };
 
-    return this.resources.pipe(
-      map((resources) =>
-        this.http.get<TheRickAndMorty.Location>(
-          url || `${resources['locations']}/${id}`,
-          options
-        )
-      ),
-      mergeAll(),
-      shareReplay()
-    );
+    return this.getOne('location', id, url, options) as Observable<
+      TheRickAndMorty.Location
+    >;
   }
 
   searchCharacter(
@@ -185,7 +200,7 @@ export class RickAndMortyService {
   }
 
   searchEpisode(name: string, page: number | string = 1, episode?: string) {
-    console.log(name)
+    console.log(name);
     const params = new HttpParams()
       .append('page', page.toString())
       .append('name', name.toString());
