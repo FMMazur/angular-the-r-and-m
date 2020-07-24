@@ -20,7 +20,7 @@
     class="arrow align-middle"
     [@rotatedState]="!show ? 'default' : 'rotated'"
   >
-    <ion-icon name="play-outline"></ion-icon>
+    <ion-icon [name]="!show ? 'play-outline' : 'play'"></ion-icon>
   </div>
 </div>
 <div [@smoothCollapse]="!show ? 'initial' : 'final'">
