@@ -1,8 +1,13 @@
-FROM gitpod/workspace-full
+FROM gitpod/workspace-full-vnc:branch-jx-python-tk
 
-# Install custom tools, runtimes, etc.
-# For example "bastet", a command-line tetris clone:
-# RUN brew install bastet
-#
-# More information: https://www.gitpod.io/docs/config-docker/
 RUN npm install @angular/cli -g
+RUN add-apt-repository ppa:maarten-fonville/android-studio && \
+    apt-get update && \
+    apt-get install android-sdk \
+        lib32stdc++6 \
+        android-studio \
+        android-sdk-build-tools \
+        android-sdk \
+        android-sdk-platform-23 --no-install-recommends --yes \
+        && apt-get clean \
+        && rm -rf /var/lib/apt/lists/*
