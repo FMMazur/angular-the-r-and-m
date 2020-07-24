@@ -1,0 +1,56 @@
+.acc-header {
+  border-bottom: 1px solid rgb(202, 202, 202);
+  min-height: 30px;
+  cursor: pointer;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding: 0px;
+
+  color: #25c6f7;
+}
+
+.header-title {
+  overflow-wrap: break-word;
+  overflow: auto;
+  width: 100%;
+
+  font-weight: 600;
+}
+
+.acc-body {
+  align-items: center;
+
+  background-color: #0c916e !important;
+
+  font-size: 12px !important;
+
+  // margin: 0;
+  min-height: 30px;
+
+  padding: 0;
+}
+
+img {
+  max-width: 100%;
+}
+
+ion-badge {
+  --color-contrast: #ffffff;
+  height: 21px;
+}
+
+ion-card-content {
+  display: grid;
+  row-gap: 10px;
+}
+
+ion-icon {
+  display: inline-block;
+  vertical-align: middle;
+}
+
+ion-card-content > ion-badge > ion-icon {
+  width: 15px;
+  height: 15px;
+}

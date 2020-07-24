@@ -1,0 +1,115 @@
+<ion-item
+  button
+  (click)="toggle()"
+  detail="false"
+  class="acc-header noBackground"
+>
+  <ion-label class="ion-text-center header-title"
+    >{{ information.name }}
+  </ion-label>
+
+  <ng-container *ngIf="checkType() === 'character'">
+    <ion-badge
+      [color]="
+        information.status == 'Alive'
+          ? 'primary'
+          : information.status == 'Dead'
+          ? 'danger'
+          : 'dark'
+      "
+      mode="ios"
+    >
+      <ion-icon *ngIf="information.status == 'Alive'" name="heart"></ion-icon>
+      <ion-icon *ngIf="information.status == 'Dead'" name="skull"></ion-icon>
+      <ng-container *ngIf="information.status == 'unknown'">???</ng-container>
+    </ion-badge>
+  </ng-container>
+
+  <div
+    class="arrow align-middle"
+    [@rotatedState]="!show ? 'default' : 'rotated'"
+  >
+    <ion-icon [name]="!show ? 'play-outline' : 'play'"></ion-icon>
+  </div>
+</ion-item>
+<div [@smoothCollapse]="!show ? 'initial' : 'final'">
+  <ion-card class="acc-body noBackground" mode="ios">
+    <!-- Character -->
+    <ng-container *ngIf="checkType() === 'character'">
+      <ion-img [src]="information.image"></ion-img>
+
+      <ion-card-content>
+        <ion-badge color="secondary" mode="ios"
+          >Species: {{ information.species }}</ion-badge
+        >
+
+        <ion-badge color="secondary" mode="ios">
+          Gender:
+          <ng-container *ngIf="information.gender === 'Male'"
+            ><ion-icon class="align-bottom" name="male"></ion-icon
+          ></ng-container>
+          <ng-container *ngIf="information.gender === 'Female'"
+            ><ion-icon class="align-bottom" name="female"></ion-icon
+          ></ng-container>
+          <ng-container *ngIf="information.gender === 'Genderless'">
+            <ion-icon
+              src="assets/custom-icons/noun-genderless.svg"
+              alt="genderless by Guilherme Furtado from the Noun Project"
+              style="width='20px';height='20px'"
+            ></ion-icon>
+          </ng-container>
+          <ng-container *ngIf="information.gender === 'unknown'"
+            >???</ng-container
+          >
+        </ion-badge>
+
+        <ion-badge color="secondary" mode="ios">
+          Last Location:
+          {{ information.location.name }}
+        </ion-badge>
+
+        <ion-badge color="secondary" mode="ios">
+          Origin
+          <ion-icon class="align-middle" name="planet-outline"></ion-icon> :
+          {{ information.origin.name }}
+        </ion-badge>
+      </ion-card-content>
+    </ng-container>
+
+    <!-- Episode -->
+    <ng-container *ngIf="checkType() === 'episode'">
+      <ion-card-content>
+        <ion-badge color="secondary" mode="ios">
+          Air Date
+          <ion-icon
+            src="assets/custom-icons/noun-Calendar.svg"
+            alt="Calendar by franc11s from the Noun Project"
+          ></ion-icon>
+          {{ information.air_date }}
+        </ion-badge>
+        <ion-badge color="secondary" mode="ios">
+          Episode:
+          {{ information.episode }}
+        </ion-badge>
+      </ion-card-content>
+    </ng-container>
+    <ng-container *ngIf="checkType() === 'location'">
+      <ion-card-content>
+        <ion-badge color="secondary" mode="ios"
+          >Type: {{ information.type }}</ion-badge
+        >
+        <ion-badge color="secondary" mode="ios">
+          Dimension
+          <ion-icon
+              src="assets/custom-icons/noun-4D.svg"
+              alt="4D by Michael Senkow from the Noun Project"
+              width="15px"
+              height="15px"
+          ></ion-icon> :
+          {{ information.dimension }}
+        </ion-badge>
+      </ion-card-content>
+    </ng-container>
+    <ng-container *ngIf="!checkType()"></ng-container>
+  </ion-card>
+</div>

@@ -1,0 +1,105 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-title class="ion-text-center">The R and M</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-toolbar class="toolbar">
+    <ion-searchbar
+      placeholder="Search {{ searchType }}"
+      (ionChange)="input($event)"
+      mode="ios"
+      debounce="250"
+    ></ion-searchbar>
+
+    <ion-list class="noBackground">
+      <ion-item
+        button
+        (click)="toggleOptions()"
+        class="searchbyColor noBackground"
+        mode="md"
+        lines="none"
+      >
+        <ion-label>Search by: </ion-label>
+        <ion-icon
+          slot="end"
+          [name]="!showOptions ? 'play-outline' : 'play'"
+          [@rotatedState]="!showOptions ? 'default' : 'rotated'"
+          color="#49F270"
+        ></ion-icon>
+      </ion-item>
+      <div [@smoothCollapse]="!showOptions ? 'initial' : 'final'">
+        <ion-radio-group
+          name="characterRadio"
+          (ionChange)="changeRadioOptions()"
+          [(ngModel)]="searchType"
+        >
+          <ion-item class="searchbyColor noBackground">
+            <ion-label>Character</ion-label>
+            <ion-radio value="character" checked></ion-radio>
+          </ion-item>
+          <ion-item class="searchbyColor noBackground">
+            <ion-label>Episode</ion-label>
+            <ion-radio value="episode"></ion-radio>
+          </ion-item>
+          <ion-item class="searchbyColor noBackground">
+            <ion-label>Location</ion-label>
+            <ion-radio value="location"></ion-radio>
+          </ion-item>
+        </ion-radio-group>
+      </div>
+    </ion-list>
+  </ion-toolbar>
+
+  <ion-spinner
+    class="spin"
+    name="circular"
+    *ngIf="searching && !searchFailed"
+  ></ion-spinner>
+
+  <ion-toolbar
+    *ngIf="(response | async) && !searching && !searchFailed"
+    class="noBackground"
+  >
+    <accordion>
+      <accordion-item
+        *ngFor="let result of (response | async).results"
+        [information]="result"
+      ></accordion-item>
+    </accordion>
+  </ion-toolbar>
+
+  <!-- Not Found Card -->
+  <ion-card *ngIf="searchFailed" color="danger" class="ion-text-center">
+    <ion-card-header text-center>
+      <ion-card-title text-center>Not Found!!!</ion-card-title>
+    </ion-card-header>
+  </ion-card>
+</ion-content>
+
+<!-- Footer -->
+<ion-footer>
+  <ion-toolbar>
+    <ion-tabs>
+      <ion-tab-bar slot="bottom,top">
+        <ng-container *ngIf="response | async">
+          <ion-tab-button
+            [disabled]="!(response | async).info || !(response | async).info.prev"
+            (click)="prevPage()"
+          >
+            <ion-icon name="arrow-back-circle" color="primary"></ion-icon>
+            <ion-label color="primary">Previuos Page</ion-label>
+          </ion-tab-button>
+          <ion-tab-button
+            [disabled]="!(response | async).info || !(response | async).info.next"
+            (click)="nextPage()"
+          >
+            <ion-icon name="arrow-forward-circle" color="primary"></ion-icon>
+            <ion-label color="primary">Next Page</ion-label>
+          </ion-tab-button>
+        </ng-container>
+      </ion-tab-bar>
+    </ion-tabs>
+  </ion-toolbar>
+</ion-footer>

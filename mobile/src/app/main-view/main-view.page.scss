@@ -1,0 +1,42 @@
+ion-content {
+  --ion-background-color: #343a40;
+}
+
+ion-header {
+  background-color: #3fa156;
+}
+
+ion-searchbar {
+  --placeholder-color: white;
+  --icon-color: #2dd36f;
+  padding-bottom: 0px;
+}
+
+ion-title {
+  color: white;
+}
+
+.spin {
+  position: fixed;
+  margin-top: 10px;
+
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%);
+  --color: #2dd36f;
+}
+
+.toolbar {
+  --background: transparent;
+  -item-background: transparent;
+
+  border: 1px solid #2dd36f;
+  border-radius: 10px;
+
+  margin-top: 10px;
+  padding: 0;
+}
+
+.searchbyColor {
+  --color: #49F270;
+}
